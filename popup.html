@@ -1,0 +1,52 @@
+<!doctype html>  
+<script src="popup.js"></script>  
+   <html>  
+   <head>  
+      <title>Azure Frog</title>  
+   <style>  
+      body{  
+         min-width: 200px;  
+         text-align: center;  
+         font-family: century Gothic;  
+         } 
+      h2 {
+         color:#07FF
+      } 
+   .button {  
+         background-color: #4CAF50;  
+         border: none;  
+         color: white;  
+         padding: 5px 14px;  
+         text-align: center;  
+         text-decoration: none;  
+         display: inline-block;  
+         font-size: 16px;  
+         margin: 4px 2px;  
+         transition-duration: 0.4s;  
+         cursor: pointer;  
+         }  
+      .button2 {  
+         background-color: white;  
+         color: black;  
+         border: 2px solid #008CBA;  
+         }  
+      .button2:hover {  
+         background-color: #008CBA;  
+         color: white;  
+         }
+      img {
+         width: 50px;
+         height: 50px;
+         }
+      </style>  
+   </head>  
+   <body>
+      <h2>Azure Frog</h2>
+      <img src="Images/AzureFrog.png"/>
+      <div id="onlyId" style="visibility: hidden;">
+         <input type="checkbox" id="onlyIdBox" name="onlyId" style="visibility: inherit;">
+         <label for="onlyId" style="visibility: inherit;">Only copy id?</label><br>   
+      </div>
+      <p id="result"></p>
+   </body>  
+</html>  
