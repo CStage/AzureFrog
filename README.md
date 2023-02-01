@@ -26,5 +26,5 @@ For more about Azure Frog, check out my blog here: [FrogBlog.com](https://www.yo
 
 **Acknowledgements:**
 <br>
-Azure Frog is the stupid brainchild of Christian "_No Middle Name_" Stage, with important contributions from Peter Heltoft and critical moral support from Rune Riber and Axel "_A Million Middle Names_" Abildtrup. Thank you for inspiring me to go public with this 
+Azure Frog is the stupid brainchild of Christian "_No Middle Name_" Stage, with important contributions from Peter Heltoft and critical moral support from Rune Riber and Axel "_A Million Middle Names_" Abildtrup. Thank you for inspiring me to create this absolute masterpiece.
 
