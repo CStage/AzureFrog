@@ -27,7 +27,7 @@ async function GrabLink(azure)
 {
     var tab = await getCurrentTab();
     var activeTabUrl = tab.url; // or do whatever you need
-    if (activeTabUrl.includes("source.netcompany.com/tfs/Netcompany/ATP%20-%20AES")){
+    if (activeTabUrl.includes("atpdevelopment.visualstudio.com/AES%20ARTen")){
         if (activeTabUrl.includes("?workitem=")){
             var actualItem = activeTabUrl.split("?workitem=").pop();
             activeTabUrl = activeTabUrl.split("/edit/")[0] + "/edit/" + actualItem;
@@ -54,6 +54,8 @@ function copyAsHyperlink(url, title) {
     var anchor = document.createElement('a');
     anchor.setAttribute('href', url);
     anchor.innerHTML = title;
+    anchor.style.fontFamily = 'Calibri  ';
+    anchor.style.fontSize='11pt';
     anchor.style.backgroundColor = 'transparent';
     div.appendChild(anchor);
     document.body.appendChild(div);
