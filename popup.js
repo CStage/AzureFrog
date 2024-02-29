@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     GrabLink(false);
-    var onlyIdBox = document.getElementById("onlyIdBox");
-    if (onlyIdBox){
-        onlyIdBox.addEventListener("click", function(){
+    var prTemplateBox = document.getElementById("prTemplateBox");
+    if (prTemplateBox){
+        prTemplateBox.addEventListener("click", function(){
             GrabLink(true);
             ribbit();
         });
@@ -23,7 +23,7 @@ async function getCurrentTab() {
     return tab;
   }
 
-async function GrabLink(azure)
+async function GrabLink(copyTemplate)
 {
     var tab = await getCurrentTab();
     var activeTabUrl = tab.url; // or do whatever you need
@@ -32,7 +32,7 @@ async function GrabLink(azure)
             var actualItem = activeTabUrl.split("?workitem=").pop();
             activeTabUrl = activeTabUrl.split("/edit/")[0] + "/edit/" + actualItem;
         }
-        var onlyId = document.getElementById("onlyId");
+        var onlyId = document.getElementById("prTemplate");
         onlyId.style.visibility = "visible";
 
     }
@@ -42,11 +42,14 @@ async function GrabLink(azure)
     var doc = parser.parseFromString(text, 'text/html');
     var title = doc.querySelectorAll("title")[0];
     let identifier = title.innerText;
-    if (azure){
-        identifier = identifier.match(/\d+/g)[0];
+    if (copyTemplate){
+        let prTemplate = `[${identifier}](${activeTabUrl})`;
+        copyAsPrTemplate(prTemplate)
+    }
+    else {
+        copyAsHyperlink(activeTabUrl, identifier);
     }
     
-    copyAsHyperlink(activeTabUrl, identifier);
 }
 
 function copyAsHyperlink(url, title) {
@@ -58,6 +61,23 @@ function copyAsHyperlink(url, title) {
     anchor.style.fontSize='11pt';
     anchor.style.backgroundColor = 'transparent';
     div.appendChild(anchor);
+    document.body.appendChild(div);
+    var range = document.createRange();
+    range.selectNode(div);
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    document.execCommand('copy');
+    selection.removeAllRanges();
+    document.body.removeChild(div);
+}
+
+function copyAsPrTemplate(prTemplate){
+    var div = document.createElement('div');
+    div.innerHTML = prTemplate;
+    div.style.fontFamily = 'Calibri  ';
+    div.style.fontSize='11pt';
+    div.style.backgroundColor = 'transparent';
     document.body.appendChild(div);
     var range = document.createRange();
     range.selectNode(div);
