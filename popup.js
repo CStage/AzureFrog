@@ -67,7 +67,7 @@ async function GrabLink(copyTemplate)
 }
 
 function copyAsReviewRequest(url, title) {
-     var div = document.createElement('div');
+    var div = document.createElement('div');
     var anchor = document.createElement('a');
     var beginningParagraph = document.createElement("span");
     var endingParagraph = document.createElement("span");
