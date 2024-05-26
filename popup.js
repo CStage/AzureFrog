@@ -47,11 +47,19 @@ async function GrabLink(copyTemplate)
         identifier = activeTabUrl.split("ANS_")[1].split("/pullrequest")[0] + " PR"
         copyAsReviewRequest(activeTabUrl, identifier)
     }
-    else if (activeTabUrl.includes("goto.netcompany.com")){
+    else if (activeTabUrl.includes("goto.netcompany.com") && activeTabUrl.includes("Lists") && activeTabUrl.includes("ID")){
         let breadCrumbContainingTitle = doc.getElementsByClassName("ms-breadcrumbCurrentNode")[0]
-        identifier = breadCrumbContainingTitle.innerText;
-
+        let itemType = activeTabUrl.split("/Lists/")[1].split("/")[0]
         let trimmedUrl = activeTabUrl.split("&")[0]
+        let itemId = trimmedUrl.split("ID=")[1]
+        if (itemType === 'Tasks'){
+            itemType = 'Case'
+        }
+        else if (itemType === 'Fejlrapporter'){
+            itemType = 'Bug Report'
+        }
+        identifier = `${itemType} ${itemId}: ${breadCrumbContainingTitle.innerText}`;
+
 
         let prTemplate = `[${identifier}](${trimmedUrl})`;
         copyAsPrTemplate(prTemplate)
