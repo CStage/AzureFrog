@@ -11,6 +11,10 @@ Quickly copy a pretty link from Azure DevOps, so you can send it to your "best" 
 This link was created using Azure Frog!
 [User Story 161941: The Froggening](https://source.netcompany.com/tfs/Netcompany/ATP%20-%20AES/_workitems/edit/161941)
 
+## What's new in Version 1.3?
+---
+It is now possible to copy links formatted for status reports: **F161940** ([Azure Frog](https://source.netcompany.com/tfs/Netcompany/ATP%20-%20AES/_workitems/edit/161940))
+
 ## What's new in Version 1.2?
 ---
 **Copying review requests directly from a PR**
