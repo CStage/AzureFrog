@@ -1,20 +1,27 @@
 document.addEventListener('DOMContentLoaded', function() {
-    GrabLink(false);
-    var prTemplateBox = document.getElementById("prTemplateBox");
+    GrabLink(false, false);
+    let prTemplateBox = document.getElementById("prTemplateBox");
     if (prTemplateBox){
         prTemplateBox.addEventListener("click", function(){
-            GrabLink(true);
+            GrabLink(true, false);
             ribbit();
         });
     }
+    let statusBox = document.getElementById("statusLinkBox");
+    if (statusBox){
+        statusBox.addEventListener("click", function(){
+            GrabLink(false, true);
+            ribbit();
+        })
+    }
     ribbit();
-    var result = document.getElementById("result");
+    let result = document.getElementById("result");
     result.innerText = "Link copied to clipboard";       
     });
 
 
 function ribbit(){
-    var myAudio = new Audio(chrome.runtime.getURL("Frog sound effect.mp3"));
+    let myAudio = new Audio(chrome.runtime.getURL("Frog sound effect.mp3"));
     myAudio.play();
 }
 async function getCurrentTab() {
@@ -23,40 +30,45 @@ async function getCurrentTab() {
     return tab;
   }
 
-async function GrabLink(copyTemplate)
+async function GrabLink(copyTemplate, copyForStatus)
 {
-    var tab = await getCurrentTab();
-    var activeTabUrl = tab.url; // or do whatever you need
+    let tab = await getCurrentTab();
+    let activeTabUrl = tab.url; // or do whatever you need
     if (activeTabUrl.includes("atpdevelopment.visualstudio.com/AES%20ARTen")){
         if (activeTabUrl.includes("?workitem=")){
-            var actualItem = activeTabUrl.split("?workitem=").pop();
+            let actualItem = activeTabUrl.split("?workitem=").pop();
             activeTabUrl = activeTabUrl.split("/edit/")[0] + "/edit/" + actualItem;
         }
-        var onlyId = document.getElementById("prTemplate");
+        let onlyId = document.getElementById("prTemplate");
         onlyId.style.visibility = "visible";
-
     }
+    if (activeTabUrl.includes("atpdevelopment.visualstudio.com")){
+        let statusLinkBox = document.getElementById("statusLink");
+        statusLinkBox.style.visibility = "visible";
+    }
+
     
     const resp = await fetch(activeTabUrl);
-    var text = await resp.text();
-    var parser = new DOMParser();
-    var doc = parser.parseFromString(text, 'text/html');
-    var title = doc.querySelectorAll("title")[0];
+    let text = await resp.text();
+    let parser = new DOMParser();
+    let doc = parser.parseFromString(text, 'text/html');
+    let title = doc.querySelectorAll("title")[0];
     let identifier = title.innerText;
-    if (activeTabUrl.includes("source.netcompany.com/tfs/Netcompany/")){
-        identifier = activeTabUrl.split("ANS_")[1].split("/pullrequest")[0] + " PR"
-        copyAsReviewRequest(activeTabUrl, identifier)
+    console.log("title: " + title);
+    console.log("identifier: " + identifier);
+    if (activeTabUrl.includes("atpdevelopment.visualstudio.com") && copyForStatus){
+        copyAsStatusLink(activeTabUrl, identifier);
     }
     else if (activeTabUrl.includes("goto.netcompany.com") && activeTabUrl.includes("Lists") && activeTabUrl.includes("ID")){
-        let breadCrumbContainingTitle = doc.getElementsByClassName("ms-breadcrumbCurrentNode")[0]
-        let itemType = activeTabUrl.split("/Lists/")[1].split("/")[0]
-        let trimmedUrl = activeTabUrl.split("&")[0]
-        let itemId = trimmedUrl.split("ID=")[1]
+        let breadCrumbContainingTitle = doc.getElementsByClassName("ms-breadcrumbCurrentNode")[0];
+        let itemType = activeTabUrl.split("/Lists/")[1].split("/")[0];
+        let trimmedUrl = activeTabUrl.split("&")[0];
+        let itemId = trimmedUrl.split("ID=")[1];
         if (itemType === 'Tasks'){
-            itemType = 'Case'
+            itemType = 'Case';
         }
         else if (itemType === 'Fejlrapporter'){
-            itemType = 'Bug Report'
+            itemType = 'Bug Report';
         }
         identifier = `${itemType} ${itemId}: ${breadCrumbContainingTitle.innerText}`;
 
@@ -74,11 +86,63 @@ async function GrabLink(copyTemplate)
     
 }
 
+function copyAsStatusLink(url, title) {
+    let div = document.createElement('div');
+    let anchor = document.createElement('a');
+    let beginningParagraph = document.createElement("span");
+    let startP = document.createElement("span");
+    let endP = document.createElement("span");
+
+    // Feature 161940: Azure Frog
+    let titleArray = title.split(":")[0].split(" ");
+    let workItemPrefix = "";
+    for (const s of titleArray.slice(0, -1)){
+        console.log("s " + s)
+        workItemPrefix += Array.from(s)[0];
+    }
+    let id = titleArray.pop();
+    console.log(titleArray);
+    let featureName = title.split(": ")[1]
+    beginningParagraph.innerHTML = `<b>${workItemPrefix}${id}</b> `;
+    startP.innerHTML = "(";
+    endP.innerHTML = ")";
+    anchor.setAttribute('href', url);
+    anchor.innerHTML = featureName;
+    
+    div.appendChild(beginningParagraph);
+    div.appendChild(startP);
+    div.appendChild(anchor);
+    div.appendChild(endP);
+    
+    div.style.fontFamily = 'Arial';
+    div.style.fontSize = '9pt';
+    div.style.backgroundColor = 'transparent';
+    
+    document.body.appendChild(div);
+    
+    let range = document.createRange();
+    range.selectNodeContents(div);
+    let selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    console.log(div)
+    
+    try {
+        document.execCommand('copy');
+        console.log('Copied: ', div.innerHTML);
+    } catch (err) {
+        console.error('Failed to copy: ', err);
+    }
+    
+    selection.removeAllRanges();
+    document.body.removeChild(div);
+}
+
 function copyAsReviewRequest(url, title) {
-    var div = document.createElement('div');
-    var anchor = document.createElement('a');
-    var beginningParagraph = document.createElement("span");
-    var endingParagraph = document.createElement("span");
+    let div = document.createElement('div');
+    let anchor = document.createElement('a');
+    let beginningParagraph = document.createElement("span");
+    let endingParagraph = document.createElement("span");
     
     beginningParagraph.innerHTML = "@PR I have a ";
     endingParagraph.innerHTML = " ready for review.";
@@ -95,9 +159,9 @@ function copyAsReviewRequest(url, title) {
     
     document.body.appendChild(div);
     
-    var range = document.createRange();
+    let range = document.createRange();
     range.selectNodeContents(div);
-    var selection = window.getSelection();
+    let selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
     
@@ -113,8 +177,8 @@ function copyAsReviewRequest(url, title) {
 }
 
 function copyAsHyperlink(url, title) {
-    var div = document.createElement('div');
-    var anchor = document.createElement('a');
+    let div = document.createElement('div');
+    let anchor = document.createElement('a');
     anchor.setAttribute('href', url);
     anchor.innerHTML = title;
     anchor.style.fontFamily = 'Calibri  ';
@@ -122,9 +186,9 @@ function copyAsHyperlink(url, title) {
     anchor.style.backgroundColor = 'transparent';
     div.appendChild(anchor);
     document.body.appendChild(div);
-    var range = document.createRange();
+    let range = document.createRange();
     range.selectNode(div);
-    var selection = window.getSelection();
+    let selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
     document.execCommand('copy');
@@ -133,15 +197,15 @@ function copyAsHyperlink(url, title) {
 }
 
 function copyAsPrTemplate(prTemplate){
-    var div = document.createElement('div');
+    let div = document.createElement('div');
     div.innerHTML = prTemplate;
     div.style.fontFamily = 'Calibri  ';
     div.style.fontSize='11pt';
     div.style.backgroundColor = 'transparent';
     document.body.appendChild(div);
-    var range = document.createRange();
+    let range = document.createRange();
     range.selectNode(div);
-    var selection = window.getSelection();
+    let selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
     document.execCommand('copy');
