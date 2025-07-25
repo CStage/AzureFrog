@@ -28,7 +28,9 @@ For more about Azure Frog, check out my blog here: [FrogBlog.com](https://www.yo
 <br>
 Azure Frog is the stupid brainchild of Christian "_No Middle Name_" Stage, with important contributions from Peter Heltoft and critical moral support from Rune Riber and Axel "_A Million Middle Names_" Abildtrup. Thank you for inspiring me to create this absolute masterpiece.
 
-
+## What's new in Version 1.4?
+---
+A bug was fixed where links were incomplete due to special characters in the title. This has been fixed in 1.4
 
 ## What's new in Version 1.3?
 ---
