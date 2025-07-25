@@ -95,14 +95,14 @@ function copyAsStatusLink(url, title) {
 
     // Feature 161940: Azure Frog
     let titleArray = title.split(":")[0].split(" ");
+    console.log("Title: " + titleArray);
     let workItemPrefix = "";
     for (const s of titleArray.slice(0, -1)){
-        console.log("s " + s)
         workItemPrefix += Array.from(s)[0];
     }
     let id = titleArray.pop();
-    console.log(titleArray);
-    let featureName = title.split(": ")[1]
+    console.log(title.split(":"));
+    let featureName = title.split(":").slice(1).join(":")
     beginningParagraph.innerHTML = `<b>${workItemPrefix}${id}</b> `;
     startP.innerHTML = "(";
     endP.innerHTML = ")";
